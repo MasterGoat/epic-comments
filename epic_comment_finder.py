@@ -1,60 +1,27 @@
-#!/usr/bin/python
-
 import praw
+import prawcore
+import config
 import time
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
 
+# Name of the subreddit
 SUBREDDIT_NAME = "FortniteBRTest"
+# The word the bot looks for in the comment's flair
 AUTHOR_FLAIR = "epic"
+# Bot's username
 BOT_USERNAME = "EpicCommentBot"
 
 
-def __init__(self):
-
-    self.conf = ConfigParser()
-    self.reddit = None
-
-    os.chdir(sys.path[0])
-    if os.path.exists('conf.ini'):
-        self.conf.read('conf.ini')
-    else:
-        raise FileNotFoundError('Config file, conf.ini, was not found.')
-
-    if self.conf.get('log', 'logging') == 'False':
-        self.logging = False
-    else:
-        self.logging = True
-
-    self.login()
-
-def login(self):
-
-    app_id = self.conf.get('app', 'app_id')
-    app_secret = self.conf.get('app', 'app_secret')
-    user_agent = self.conf.get('app', 'user_agent')
-
-    if self.conf.get('app', 'auth_type') == 'webapp':
-        token = self.conf.get('auth-webapp', 'token')
-        self.reddit = praw.Reddit(client_id=app_id,
-                                  client_secret=app_secret,
-                                  refresh_token=token,
-                                  user_agent=user_agent)
-    else:
-        username = self.conf.get('auth-script', 'username')
-        password = self.conf.get('auth-script', 'passwd')
-        self.reddit = praw.Reddit(client_id=app_id,
-                                  client_secret=app_secret,
-                                  username=username,
-                                  password=password,
-                                  user_agent=user_agent)
-            
-    print(self.reddit.user.me())
+# Loggin in the bot
+def bot_login():
+    r = praw.Reddit(client_id=config.client_id,
+                    client_secret=config.client_secret,
+                    password=config.password,
+                    username=config.username,
+                    user_agent=config.user_agent)
+    return r
 
 
-def bot_run(reddit, subreddit)
+def bot_run(reddit, subreddit):
     for new_comment in subreddit.stream.comments():
         if AUTHOR_FLAIR.lower() in str(new_comment.author_flair_text).lower():
             comment_reply = ""
@@ -80,8 +47,7 @@ def bot_run(reddit, subreddit)
                 reddit.comment(bot_comment_id).edit(comment_reply)
                 print("Editing bot's sticky comment:",
                       new_comment.submission.title, time.ctime())
-    
 
-reddit = login(self)
+reddit = bot_login()
 subreddit = reddit.subreddit(SUBREDDIT_NAME)
 bot_run(reddit, subreddit)
